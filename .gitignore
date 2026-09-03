@@ -1,0 +1,9 @@
+node_modules/
+.pnpm-store/
+*.tgz
+.DS_Store
+.env
+.env.*
+!.env.example
+npm-debug.log*
+pnpm-debug.log*
