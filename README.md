@@ -1,26 +1,22 @@
 # dsh-mcp-oauth-client
 
-A universal MCP manager and client bridge for [DeepSeek Harness (DSH)]. Despite
-the historical package name, the plugin supports both authenticated and
-unauthenticated MCP servers.
+一个面向 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的通用 MCP 管理与客户端桥接插件。虽然包名保留了 oauth 历史名称，但它同时支持有认证和无认证的 MCP 服务。
 
-## Features
+## 功能
 
-- Visual MCP management in **Settings → MCP**
-- Streamable HTTP with no authentication, OAuth 2.1 + PKCE, Bearer tokens, or
-  custom request headers
-- Local stdio MCP servers with command, arguments, environment variables, and
-  working-directory configuration
-- Add, remove, enable, disable, reconnect, and inspect registered tool counts
-- Automatic OAuth browser authorization and loopback callback handling
-- OAuth refresh-token support through the official MCP SDK
+- 在 DSH「设置 → MCP」中可视化管理服务。
+- 支持可流式 HTTP（Streamable HTTP）：无认证、OAuth 2.1 + PKCE、Bearer 令牌和自定义请求头。
+- 支持本地标准输入输出（stdio）MCP：启动命令、参数、环境变量和工作目录均可配置。
+- 支持添加、删除、启用、停用、重新连接和查看工具数量。
+- OAuth 自动打开浏览器授权，并通过本机回调地址完成授权。
+- 使用官方 MCP SDK 支持 OAuth 刷新令牌。
 
-## Requirements
+## 要求
 
-- Node.js 20 or newer
-- A DSH version that supports bundle plugins and web client contributions
+- Node.js 20 或更高版本。
+- 支持组合包和 Web 客户端扩展的 DSH 版本。
 
-## Install
+## 安装
 
 ### npm
 
@@ -28,7 +24,7 @@ unauthenticated MCP servers.
 dsh plugin --profile web add dsh-mcp-oauth-client
 ```
 
-### Local tarball
+### 本地 tarball
 
 ```sh
 pnpm pack
@@ -37,45 +33,39 @@ dsh plugin --profile web add ./dsh-mcp-oauth-client-0.3.0.tgz
 
 ### Git
 
-Git dependencies run this package's `prepare` script. With pnpm 10 or newer,
-the user must explicitly allow that script in the DSH profile's
-`pnpm-workspace.yaml`:
+从 Git 安装时会执行本包的 `prepare` 脚本。pnpm 10 及以上版本需要在 DSH profile 的 `pnpm-workspace.yaml` 中明确允许该构建脚本：
 
 ```yaml
 allowBuilds:
   dsh-mcp-oauth-client: true
 ```
 
-Then install a trusted, pinned commit:
+然后使用可信且固定的 commit 安装：
 
 ```sh
 dsh plugin --profile web add github:OWNER/REPOSITORY#COMMIT_SHA
 ```
 
-Review the source before enabling a Git dependency's build script. Do not use a
-moving branch name for production installations.
+生产环境不要使用会变化的分支名。安装前请审查源码，并只对可信代码启用构建脚本。
 
-## Use
+## 使用
 
-Start the web profile, open **Settings → MCP**, and select **Add server**.
+启动 Web profile，打开「设置 → MCP」，点击「添加服务器」。
 
-For Streamable HTTP, choose one authentication mode:
+HTTP 服务可选择以下认证方式：
 
-- **None** — public or network-protected endpoint
-- **OAuth 2.1 / PKCE** — dynamic registration or an explicit client ID/secret
-- **Bearer Token** — a static token sent as `Authorization: Bearer ...`
-- **Custom headers** — API keys or provider-specific headers
+- **无认证**：适用于公开或由网络层保护的端点。
+- **OAuth 2.1 / PKCE**：支持动态注册，也支持填写客户端 ID 和客户端密钥。
+- **Bearer 令牌**：发送 `Authorization: Bearer <token>`。
+- **自定义请求头**：适用于 API Key 或服务商专用请求头。
 
-For stdio, provide the executable and put one argument on each line. Environment
-variables use one `KEY=VALUE` pair per line.
+stdio 服务需要填写可执行命令；命令参数每行填写一个，环境变量使用 `名称=值` 格式。
 
-The bundle only installs the manager. It intentionally ships without a default
-MCP endpoint, credential, or local command. Servers added in the UI are stored
-in the active profile's `cordis.patch.yml`.
+插件包只安装管理器，不内置默认 MCP 地址、凭据或本地命令。通过界面添加的服务会保存到当前 profile 的 `cordis.patch.yml`。
 
-## Direct configuration
+## 手动配置
 
-An HTTP OAuth entry can also be added to the profile patch manually:
+HTTP OAuth 服务示例：
 
 ```yaml
 - insert:
@@ -90,7 +80,7 @@ An HTTP OAuth entry can also be added to the profile patch manually:
         resourceUrl: https://mcp.example.com/mcp
 ```
 
-A stdio entry looks like this:
+stdio 服务示例：
 
 ```yaml
 - insert:
@@ -108,17 +98,13 @@ A stdio entry looks like this:
           - /path/to/allowed/directory
 ```
 
-Only one entry should have `manager: true`; the bundle-provided manager already
-fills that role.
+只有管理器条目需要设置 `manager: true`；组合包提供的管理器已经承担该角色。
 
-## Security
+## 安全说明
 
-Credentials entered in the UI are written in plain text to the active DSH
-profile's `cordis.patch.yml`. Never commit that profile file. OAuth access and
-refresh tokens are held in memory and are not persisted by this plugin. See
-[SECURITY.md](./SECURITY.md).
+界面中填写的凭据会以明文写入当前 DSH profile 的 `cordis.patch.yml`，请勿将该文件提交到 Git。OAuth 访问令牌和刷新令牌只保存在插件进程内存中，不会由本插件持久化。详见 [SECURITY.md](./SECURITY.md)。
 
-## Development
+## 开发与验证
 
 ```sh
 pnpm install
@@ -126,20 +112,18 @@ pnpm run check
 pnpm run pack:check
 ```
 
-Install the working directory into a development profile:
+将当前工作目录安装到开发 profile：
 
 ```sh
 dsh plugin --profile web add /absolute/path/to/dsh-mcp-oauth-client
 ```
 
-Verify the composed profile:
+检查组合后的 profile：
 
 ```sh
 dsh --profile web --dump-config
 ```
 
-## License
+## 许可证
 
 MIT
-
-[DeepSeek Harness (DSH)]: https://github.com/deepseek-ai/deepseek-harness
