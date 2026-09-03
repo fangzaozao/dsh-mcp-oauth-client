@@ -1,0 +1,6 @@
+- insert:
+    - id: mcp-manager
+      name: dsh-mcp-oauth-client
+      config:
+        managerOnly: true
+        manager: true
