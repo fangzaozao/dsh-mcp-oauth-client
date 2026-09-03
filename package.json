@@ -1,7 +1,7 @@
 {
   "name": "dsh-mcp-oauth-client",
   "version": "0.3.0",
-  "description": "Universal MCP manager and client bridge for DeepSeek Harness",
+  "description": "DeepSeek Harness 的通用 MCP 管理器与客户端桥接插件",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
