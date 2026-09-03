@@ -2,6 +2,8 @@
 
 一个面向 [DeepSeek Harness（DSH）](https://github.com/deepseek-ai/deepseek-harness) 的通用 MCP 管理与客户端桥接插件。虽然包名保留了 oauth 历史名称，但它同时支持有认证和无认证的 MCP 服务。
 
+> 本插件面向 DeepSeek Harness 开发者预览版。DSH 仍在快速迭代，后续版本可能包含破坏性变更。使用前请阅读 [DSH 安全说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/SECURITY.md)。
+
 ## 功能
 
 - 在 DSH「设置 → MCP」中可视化管理服务。
@@ -127,3 +129,7 @@ dsh --profile web --dump-config
 ## 许可证
 
 MIT
+
+## 反馈与发现
+
+欢迎在 [GitHub 仓库](https://github.com/fangzaozao/dsh-mcp-oauth-client) 提交反馈或 bug。仓库已使用 `dsh-plugin` 话题，便于在 DSH 社区中发现。
